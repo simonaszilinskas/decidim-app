@@ -35,7 +35,13 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { port: 3000 }
 
   # Store uploaded files on the local file system (see config/storage.yml for options)
-  config.active_storage.service = Rails.application.secrets.dig(:scaleway, :id).blank? ? :local : :scaleway
+  config.active_storage.service = if Rails.application.secrets.dig(:scaleway, :id).present?
+                                    :scaleway
+                                  elsif Rails.application.secrets.dig(:aws, :access_key_id).present?
+                                    :amazon
+                                  else
+                                    :local
+                                  end
 
   config.action_mailer.perform_caching = false
 
