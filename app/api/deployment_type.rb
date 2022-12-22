@@ -37,7 +37,7 @@ class DeploymentType < Decidim::Api::Types::BaseObject
   end
 
   def latest_commit
-    url = URI("https://api.github.com/repos/#{partial_url}/commits/#{branch}")
+    url = URI("https://api.github.com/repos/#{repo_owner}/#{repo_name}/commits/#{branch}")
 
     https = Net::HTTP.new(url.host, url.port)
     https.use_ssl = true
@@ -57,15 +57,14 @@ class DeploymentType < Decidim::Api::Types::BaseObject
   end
 
   def partial_url
-    remote.sub(%r{https://github.com/}, "")
-          .sub(/(.git)(?!.*\1)/, "")
+    remote.split("/")[-2..]
   end
 
   def repo_name
-    partial_url.split("/").last
+    partial_url.last.sub(/(.git)(?!.*\1)/, "")
   end
 
   def repo_owner
-    partial_url.split("/").first
+    partial_url.first
   end
 end
