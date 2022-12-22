@@ -12,6 +12,9 @@ class DeploymentType < Decidim::Api::Types::BaseObject
   field :up_to_date, GraphQL::Types::Boolean, "Comparison between current_commit and latest_commit", null: false
   field :latest_commit, GraphQL::Types::String, "Latest commit on the remote branch", null: false
   field :locally_modified, GraphQL::Types::Boolean, "Output of git status", null: false
+  field :remote, GraphQL::Types::String, "The remote used on this deployment", null: true
+  field :repo_name, GraphQL::Types::String, "The repository name used on this deployment", null: true
+  field :repo_owner, GraphQL::Types::String, "The repository owner used on this deployment", null: true
 
   def current_commit
     `git rev-parse HEAD`.strip
@@ -19,6 +22,10 @@ class DeploymentType < Decidim::Api::Types::BaseObject
 
   def version
     Decidim.version
+  end
+
+  def remote
+    `git ls-remote --get-url`.strip
   end
 
   def branch
@@ -50,8 +57,15 @@ class DeploymentType < Decidim::Api::Types::BaseObject
   end
 
   def partial_url
-    remote = `git ls-remote --get-url`.strip
     remote.sub(%r{https://github.com/}, "")
           .sub(/(.git)(?!.*\1)/, "")
+  end
+
+  def repo_name
+    partial_url.split("/").last
+  end
+
+  def repo_owner
+    partial_url.split("/").first
   end
 end

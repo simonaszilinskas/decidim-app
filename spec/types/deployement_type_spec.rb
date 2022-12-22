@@ -19,6 +19,9 @@ describe "DeploymentType" do
             currentCommit
             latestCommit
             locallyModified
+            remote
+            repoName
+            repoOwner
           }
       }
     )
@@ -60,7 +63,10 @@ describe "DeploymentType" do
                                              "upToDate" => true,
                                              "currentCommit" => "220fd7b6f8701816c60c0610d5a62a59b962b231",
                                              "latestCommit" => "220fd7b6f8701816c60c0610d5a62a59b962b231",
-                                             "locallyModified" => false
+                                             "locallyModified" => false,
+                                             "remote" => "https://my_remote/my_name/my_repo",
+                                             "repoName" => "my_repo",
+                                             "repoOwner" => "my_name"
                                            })
     end
 
